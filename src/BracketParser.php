@@ -4,10 +4,13 @@ namespace voodooism\bracketparser;
 
 class BracketParser
 {
-
     private $forbiddenSymbols = [];
     private const META_SYMBOLS = ['^', '[', '.', '$', '{', '*', '(', '\\', '+', ')', '|', '?', '<',  '>', ']'];
 
+    /**
+     * BracketParser constructor.
+     * @param array|null $forbiddenCharacters
+     */
     public function __construct(array $forbiddenCharacters = null)
     {
         if ($forbiddenCharacters) {
@@ -15,6 +18,9 @@ class BracketParser
         }
     }
 
+    /**
+     * @param string $character
+     */
     public function delForbiddenSymbol(string $character)
     {
         $this->forbiddenSymbols = array_filter($this->forbiddenSymbols, function ($element) use ($character) {
@@ -22,6 +28,9 @@ class BracketParser
         });
     }
 
+    /**
+     * @param string $character
+     */
     public function addForbiddenSymbol(string $character)
     {
         $this->forbiddenSymbols[] = $character;
@@ -48,6 +57,10 @@ class BracketParser
         return $this->forbiddenSymbols;
     }
 
+    /**
+     * @param string $string
+     * @return bool
+     */
     public function parseString(string $string)
     {
         if (empty($string)) {
@@ -74,12 +87,19 @@ class BracketParser
         return $balance === 0;
     }
 
+    /**
+     * @param string $string
+     * @return bool
+     */
     private function isValidString(string $string)
     {
         $pattern = $this->makePattern();
         return $pattern ? !preg_match($pattern, $string) : true;
     }
 
+    /**
+     * @return string|null
+     */
     private function makePattern() {
         $pattern = '';
         foreach ($this->forbiddenSymbols as $character) {
